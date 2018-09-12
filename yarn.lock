@@ -137,9 +137,9 @@
     ui-router-visualizer "^4.0.0"
     ui-select "^0.19.6"
 
-"@spinnaker/styleguide@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@spinnaker/styleguide/-/styleguide-1.0.0.tgz#8662cf4778e0292540d389c5caa6e9b94536e9a0"
+"@spinnaker/styleguide@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@spinnaker/styleguide/-/styleguide-1.0.10.tgz#dd81935dc059c89b0710745f7a6b34c465003960"
   dependencies:
     autoprefixer "^8.0.0"
     cssnano "^3.10.0"
@@ -147,8 +147,8 @@
     gulp-concat "^2.6.1"
     gulp-postcss "^7.0.1"
     postcss-css-variables "^0.8.0"
-    postcss-export-vars "^0.2.0"
     postcss-extend "^1.0.5"
+    postcss-extract-vars "^0.0.1"
     postcss-import "^11.1.0"
     postcss-style-guide "^0.14.0"
 
@@ -2681,6 +2681,14 @@ chalk@^2.3.1:
     ansi-styles "^3.2.0"
     escape-string-regexp "^1.0.5"
     supports-color "^5.2.0"
+
+chalk@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
+  dependencies:
+    ansi-styles "^3.2.1"
+    escape-string-regexp "^1.0.5"
+    supports-color "^5.3.0"
 
 chalk@~0.4.0:
   version "0.4.0"
@@ -8154,7 +8162,7 @@ lodash@^4.0.0, lodash@^4.12.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.16.1, l
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
-lodash@^4.10.0, lodash@^4.15.0, lodash@^4.17.5:
+lodash@^4.15.0, lodash@^4.17.5:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
@@ -10142,18 +10150,17 @@ postcss-discard-unused@^2.2.1:
     postcss "^5.0.14"
     uniqs "^2.0.0"
 
-postcss-export-vars@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/postcss-export-vars/-/postcss-export-vars-0.2.0.tgz#3fc7c3b14b3402c2f6c8a6e36a2298ace8d4f48f"
-  dependencies:
-    lodash "^4.10.0"
-    postcss "^5.0.16"
-
 postcss-extend@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/postcss-extend/-/postcss-extend-1.0.5.tgz#5ea98bf787ba3cacf4df4609743f80a833b1d0e7"
   dependencies:
     postcss "^5.0.4"
+
+postcss-extract-vars@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/postcss-extract-vars/-/postcss-extract-vars-0.0.1.tgz#314f40477713e351ceda40281dc86f4543898bd7"
+  dependencies:
+    postcss "^6.0.16"
 
 postcss-filter-plugins@^2.0.0:
   version "2.0.2"
@@ -10416,6 +10423,14 @@ postcss@^6.0.1, postcss@^6.0.6:
     chalk "^2.1.0"
     source-map "^0.5.6"
     supports-color "^4.2.1"
+
+postcss@^6.0.16:
+  version "6.0.23"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.23.tgz#61c82cc328ac60e677645f979054eb98bc0e3324"
+  dependencies:
+    chalk "^2.4.1"
+    source-map "^0.6.1"
+    supports-color "^5.4.0"
 
 preact@^7.2.0:
   version "7.2.1"
@@ -12835,6 +12850,12 @@ supports-color@^5.1.0, supports-color@^5.3.0:
 supports-color@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.2.0.tgz#b0d5333b1184dd3666cbe5aa0b45c5ac7ac17a4a"
+  dependencies:
+    has-flag "^3.0.0"
+
+supports-color@^5.4.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
   dependencies:
     has-flag "^3.0.0"
 
