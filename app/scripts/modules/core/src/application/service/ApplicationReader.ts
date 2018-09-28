@@ -58,14 +58,6 @@ export class ApplicationReader {
       });
   }
 
-  public static async getPipelineConfigsForApp(name: string) {
-    const response = await fetch(`${SETTINGS.gateUrl}/applications/${name}/pipelineConfigs`, {
-      credentials: 'include',
-    });
-    const pipelineConfigs = await response.json();
-    return pipelineConfigs;
-  }
-
   public static getApplicationMap(): Map<string, IApplicationSummary> {
     return this.applicationMap;
   }

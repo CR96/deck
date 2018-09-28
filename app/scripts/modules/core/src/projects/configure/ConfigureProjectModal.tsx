@@ -1,19 +1,16 @@
-import { ProjectAttributes } from 'core/projects/configure/ProjectAttributes';
-import { Applications } from 'core/projects/configure/Applications';
-import { Pipelines } from 'core/projects/configure/Pipelines';
-import { Clusters } from 'core/projects/configure/Clusters';
 import * as React from 'react';
+
+import { IApplicationSummary, ApplicationReader } from 'core/application';
+import { IProject, IProjectCluster, IProjectPipeline } from 'core/domain';
+import { WizardModal } from 'core/modal';
+import { PipelineConfigService } from 'core/pipeline';
+import { IModalComponentProps, ReactModal } from 'core/presentation';
+import { Applications, Clusters, Pipelines, ProjectAttributes } from 'core/projects';
+import { TaskMonitor } from 'core/task';
+import { noop } from 'core/utils';
+
 import { ProjectReader } from '../service/ProjectReader';
 import { ProjectWriter } from '../service/ProjectWriter';
-import { ApplicationReader } from 'core/application/service/ApplicationReader';
-
-import { WizardModal } from 'core/modal';
-import { IModalComponentProps, ReactModal } from 'core/presentation';
-import { noop } from 'core/utils';
-import { IProject, IProjectPipeline, IProjectCluster } from 'core/domain';
-import { TaskMonitor } from 'core/task';
-import { IApplicationSummary } from 'core/application';
-import { IPipelineTemplateConfig } from 'core/pipeline/config/templates/PipelineTemplateReader';
 
 import './ConfigureProjectModal.css';
 
@@ -88,22 +85,13 @@ export class ConfigureProjectModal extends React.Component<IConfigureProjectModa
 
   private onTaskComplete = () => {};
 
-  private submit = async (values: any) => {
+  private submit = (values: IUpsertProjectCommand) => {
     const { projectConfiguration } = this.props;
     const { applications, pipelineConfigs, clusters, name, email } = values;
-    const config = {
-      applications,
-      pipelineConfigs,
-      clusters,
-    };
 
-    const project = {
-      name,
-      id: projectConfiguration.id || null,
-      email,
-      config,
-      notFound: false,
-    };
+    const id = projectConfiguration.id || null;
+    const config = { applications, pipelineConfigs, clusters };
+    const project = { name, id, email, config, notFound: false };
 
     this.state.taskMonitor.submit(() => ProjectWriter.upsertProject(project));
   };
@@ -112,37 +100,27 @@ export class ConfigureProjectModal extends React.Component<IConfigureProjectModa
     return {};
   };
 
-  private fetchProjects = async () => {
-    const projects = await ProjectReader.listProjects();
-    this.setState({
-      existingProjectNames: projects.map((project: IProject) => project.name),
-      loaded: true,
+  private fetchProjects = () => {
+    ProjectReader.listProjects().then(projects => {
+      const existingProjectNames = projects.map(project => project.name);
+      this.setState({ existingProjectNames, loaded: true });
     });
   };
 
-  private fetchApplicationsList = async () => {
-    const applications = await ApplicationReader.listApplications();
-    this.setState({
-      allApplications: applications,
+  private fetchApplicationsList = () =>
+    ApplicationReader.listApplications().then(allApplications => this.setState({ allApplications }));
+
+  private fetchPipelinesForApps = (applications: string[]) => {
+    // Only fetch for the apps we don't already have results for
+    applications.filter(app => !this.state.appPipelines.get(app)).forEach(async app => {
+      const configs = await PipelineConfigService.getPipelinesForApplication(app);
+      const pipelineConfigs = configs.map(config => ({ name: config.name, id: config.id }));
+      const appPipelines = { ...this.state.appPipelines, [app]: pipelineConfigs };
+      this.setState({ appPipelines });
     });
   };
 
-  private fetchPipelinesForApps = async (applications: string[]) => {
-    const { appPipelines } = this.state;
-    applications.forEach(async (app: string) => {
-      if (!Object.keys(appPipelines).includes(app)) {
-        const pipelineConfigs = await ApplicationReader.getPipelineConfigsForApp(app);
-        this.setState({
-          appPipelines: this.state.appPipelines.set(
-            app,
-            pipelineConfigs.map((config: IPipelineTemplateConfig) => ({ name: config.name, id: config.id })),
-          ),
-        });
-      }
-    });
-  };
-
-  private onDelete = async () => {
+  private onDelete = () => {
     const { projectConfiguration } = this.props;
     if (projectConfiguration) {
       this.state.taskMonitor.submit(() => ProjectWriter.deleteProject(projectConfiguration));
@@ -152,16 +130,12 @@ export class ConfigureProjectModal extends React.Component<IConfigureProjectModa
   public render() {
     const { dismissModal, projectConfiguration } = this.props;
     const { allApplications, appPipelines, loaded, taskMonitor } = this.state;
+    const pc = projectConfiguration || ({ config: {} } as IProject);
 
-    const initialValues =
-      (projectConfiguration && {
-        name: projectConfiguration.name,
-        email: projectConfiguration.email,
-        applications: projectConfiguration.config.applications,
-        pipelineConfigs: projectConfiguration.config.pipelineConfigs,
-        clusters: projectConfiguration.config.clusters,
-      }) ||
-      {};
+    const { name, email } = pc;
+    const { applications, pipelineConfigs, clusters } = pc.config;
+
+    const initialValues = { name, email, applications, pipelineConfigs, clusters };
 
     return (
       <WizardModal
